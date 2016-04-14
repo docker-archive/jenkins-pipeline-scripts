@@ -9,51 +9,53 @@ def versionString = null
 def imageId = null
 
 def makeTask(nodeType, taskName, doStash, depends, extraEnv, Closure body=null) {
-  return { wrappedNode(label: nodeType) {
-    deleteDir()
-    checkout(scm)
-    echo "Pulling image ${imageId}"
-    docker.image(imageId).pull()
-    
-    withEnv([
-      "KEEPBUNDLE=true",
-      "TESTFLAGS=-v",
-      ] + (extraEnv ?: [])
-    ) {
-      for (int i = 0; i < depends.size(); i++) {
-        unstash depends.get(i)
-      }
-      withChownWorkspace {
-        sh("""
-          export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
-          docker run \
-          -i \
-          --rm \
-          --privileged \
-          -e KEEPBUNDLE \
-          -e TESTFLAGS \
-          -e DOCKER_BUILD_PKGS \
-          -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \
-          "${imageId}" \
-          hack/make.sh ${taskName}
-        """)
-      }
-      if (this.versionString == null) {
-        sh("pushd bundles && ls | grep -v latest > ../version-string.txt && popd")
-        this.versionString = readFile("version-string.txt").trim()
-        sh("rm version-string.txt")
-        echo "Got version string: ${this.versionString}"
-      }
-      if (body) { body() }
-      echo("${taskName} complete")
-      if (doStash) {
-        sh "[[ -L bundles/latest ]] && rm bundles/latest"
-        stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}/**")
-        archive(includes: "bundles/${this.versionString}/${taskName}/**")
+  return {
+    wrappedNode(label: nodeType) {
+      deleteDir()
+      checkout(scm)
+      echo "Pulling image ${imageId}"
+      docker.image(imageId).pull()
+
+      withEnv([
+        "KEEPBUNDLE=true",
+        "TESTFLAGS=-v",
+        ] + (extraEnv ?: [])
+      ) {
+        for (int i = 0; i < depends.size(); i++) {
+          unstash depends.get(i)
+        }
+        withChownWorkspace {
+          sh("""
+            export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
+            docker run \
+            -i \
+            --rm \
+            --privileged \
+            -e KEEPBUNDLE \
+            -e TESTFLAGS \
+            -e DOCKER_BUILD_PKGS \
+            -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \
+            "${imageId}" \
+            hack/make.sh ${taskName}
+          """)
+        }
+        if (this.versionString == null) {
+          sh("pushd bundles && ls | grep -v latest > ../version-string.txt && popd")
+          this.versionString = readFile("version-string.txt").trim()
+          sh("rm version-string.txt")
+          echo "Got version string: ${this.versionString}"
+        }
+        if (body) { body() }
+        echo("${taskName} complete")
+        if (doStash) {
+          sh "[[ -L bundles/latest ]] && rm bundles/latest"
+          stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}/**")
+          archive(includes: "bundles/${this.versionString}/${taskName}/**")
+        }
       }
     }
   }
-}}
+}
 
 def go2xunit(task) {
   sh("cd bundles/${this.versionString}/${task} && docker run --rm bmangold/go2xunit < test-stdout.log > test.xml")
