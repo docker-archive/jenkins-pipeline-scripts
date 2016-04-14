@@ -27,16 +27,16 @@ def makeTask(nodeType, taskName, doStash, depends, extraEnv, Closure body=null) 
         withChownWorkspace {
           sh("""
             export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
-            docker run \
-            -i \
-            --rm \
-            --privileged \
-            -e KEEPBUNDLE \
-            -e TESTFLAGS \
-            -e DOCKER_BUILD_PKGS \
-            -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \
-            "${imageId}" \
-            hack/make.sh ${taskName}
+            docker run \\
+              -i \\
+              --rm \\
+              --privileged \\
+              -e KEEPBUNDLE \\
+              -e TESTFLAGS \\
+              -e DOCKER_BUILD_PKGS \\
+              -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \\
+              "${imageId}" \\
+              hack/make.sh ${taskName}
           """)
         }
         if (this.versionString == null) {
