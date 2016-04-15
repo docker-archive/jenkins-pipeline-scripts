@@ -78,7 +78,7 @@ def integrationTask(label) {
 }
 
 def packageTask(pkgTask, distro) {
-  return this.makeTask("docker", "build-${pkgTask}", false, ["dynbinary"], ["DOCKER_BUILD_PKGS=${distro}"])
+  return this.makeTask("docker", "build-${pkgTask}", true, ["dynbinary"], ["DOCKER_BUILD_PKGS=${distro}"])
 }
 
 def buildTask(buildTaskName) {
