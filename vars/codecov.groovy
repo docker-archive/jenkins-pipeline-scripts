@@ -1,4 +1,4 @@
-def codecov(credsName=null) {
+def call(credsName=null) {
   if (!credsName) {
     def path = scm.repositories[0].URIs[0].path
     def repoOwner = path.split('/')[0]
