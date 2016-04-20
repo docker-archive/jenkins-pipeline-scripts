@@ -8,7 +8,7 @@ def versionString = null
 @Field
 def imageId = null
 
-def makeTask(nodeType, taskName, doStash, depends, extraEnv, Closure body=null) {
+def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null) {
   return {
     wrappedNode(label: nodeType) {
       deleteDir()
@@ -49,8 +49,12 @@ def makeTask(nodeType, taskName, doStash, depends, extraEnv, Closure body=null) 
         echo("${taskName} complete")
         if (doStash) {
           sh "[[ -L bundles/latest ]] && rm bundles/latest"
-          stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}/**")
-          archive(includes: "bundles/${this.versionString}/${taskName}/**")
+          def taskNameParts = taskNames.split(' ')
+          for (i = 0; i < taskNameParts.size(); i++) {
+            def taskName = taskNameParts.get(i)
+            stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}/**")
+            archive(includes: "bundles/${this.versionString}/${taskName}/**")
+          }
         }
       }
     }
