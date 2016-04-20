@@ -8,6 +8,7 @@ def call(args=null, Closure body=null) {
   def testerTag = args.get("golang_tag", goVersion) ?: "gimme"
   def envVars = args.get("env_vars", [])
   def gocovArgs = args.get("gocov_args", "")
+  def maxWarnings = args.get("max_warnings", 0)
 
   if (!packageName) {
     throw new Exception("Please specify a 'package': `golangTester(package: 'github.com/docker/my-proj')`")
@@ -72,7 +73,7 @@ def call(args=null, Closure body=null) {
           parserName: "Go Vet",
           pattern: "results/vet.txt"
         ]],
-        unstableTotalAll: '0'
+        unstableTotalAll: "${maxWarnings}"
       ])
       archive 'results'
       if (body) { body() }

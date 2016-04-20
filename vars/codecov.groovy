@@ -4,7 +4,7 @@ def call(credsName=null) {
     def repoOwner = path.split('/')[0]
     def repoName = path.split('/')[-1].replaceAll(/\.git$/, '')
     credsName = repoName
-    if (repoOwner != 'docker') {
+    if (repoOwner && repoOwner != 'docker') {
       credsName = "${repoOwner}-${credsName}"
     }
   }
