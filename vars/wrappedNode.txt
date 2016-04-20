@@ -1,0 +1,10 @@
+<strong>wrappedNode(label: null, registryCreds: "dockerbuildbot-index.docker.io") { ... }</strong>
+
+<p>
+Runs the given closure on a node matching <code>label</code> with the following behaviors:
+<ul>
+<li>Timestamps in build output</li>
+<li>Colored output</li>
+<li>Logged into the Docker Registry with the credentials specified by thegiven ID</li>
+</ul>
+</p>
