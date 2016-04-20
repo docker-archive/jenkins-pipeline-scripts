@@ -1,0 +1,3 @@
+<strong>nodeExists(label)</strong>
+
+<p>Returns true if there is at least one node or cloud configuration that matches the given label; false otherwise.</p>

@@ -1,0 +1,8 @@
+<strong>withChownWorkspace { ... }</strong>
+
+<p>
+Performs the tasks specified in the given closure and <code>chown</code>s the workspace after.
+It requires docker and is unlikely to work on a non-linux host.
+The exact mechanism is as follows:
+<pre>docker run --rm -v $(pwd):/workspace busybox chown -R "$(id -u):$(id -g)" /workspace</pre>
+</p>

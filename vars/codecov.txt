@@ -1,0 +1,21 @@
+<strong>codecov(credsName=null)</strong>
+
+<p>Submits coverage information to codecov.io using their <a href="https://codecov.io/bash">bash script</a>.</p>
+<p>
+<code>credsName</code> is optional:
+<ul>
+    <li>
+        <p>if not specified, the repository name and owner are extracted from the repository URL, and joined with a "-". if the owner is "docker", it is dropped.</p>
+        <p>examples:<ul>
+            <li>docker/docker.git becomes docker</li>
+            <li>docker/swarm.git becomes swarm</li>
+            <li>mikedougherty/swarm becomes mikedougherty-swarm</li>
+        </ul></p>
+    </li>
+    <li><p>if specified, it is used directly.</p></li>
+</ul>
+The result of this is then combined with the suffix <code>.codecov-token</code>
+(e.g.: <code>swarm.codecov-token</code>) and used to look up a "secret text"
+credentials item which is used to submit the codecov token. Please contact your
+Jenkins administrator if you need credentials added to the system for your project.
+</p>

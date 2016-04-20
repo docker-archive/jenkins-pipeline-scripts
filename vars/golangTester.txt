@@ -1,0 +1,20 @@
+<pre>
+// Defaults shown; only package is required
+golangTester(
+  package: "your go package name", // like "github.com/docker/docker"
+  label: "docker",
+  env_vars: ["KEY=value", "FOO=bar"],
+  go_version: "",
+  gocycloMax: "",
+  golang_tag: "gimme", // or go_version if specified
+  gocov_args: "",
+  max_warnings: 0
+) {
+  // optional
+}
+</pre>
+
+Uses images from the dockerautomation/golang-tester repository to test a golang package. It runs golint, go fmt, go vet, gocyclo, and go test (with gocov).
+Lint, fmt, vet, and cyclo results are recorder using the Warnings plugin. The build will be marked Unstable if there are more than <code>max_warnings</code>.
+Test results are recorded (as JUnit) and the build will be marked Unstable if there are failures.
+After running these tasks, it executes the given closure (if any).
