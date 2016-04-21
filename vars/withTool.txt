@@ -1,6 +1,6 @@
-<strong>withTool("tool-name") { ... }</strong>
-<strong>withTool("tool-name@1.0") { ... }</strong>
-<strong>withTool(["tool-one@1.0", "tool-two"]) { ... }</strong>
+<strong>withTool("tool-name") { ... }</strong><br/>
+<strong>withTool("tool-name@1.0") { ... }</strong><br/>
+<strong>withTool(["tool-one@1.0", "tool-two"]) { ... }</strong><br/>
 
 <p>
 Install one or more pre-configured tools with specified versions and execute
