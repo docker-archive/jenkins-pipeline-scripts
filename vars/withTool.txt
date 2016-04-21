@@ -1,0 +1,10 @@
+<strong>withTool("tool-name") { ... }</strong>
+<strong>withTool("tool-name@1.0") { ... }</strong>
+<strong>withTool(["tool-one@1.0", "tool-two"]) { ... }</strong>
+
+<p>
+Install one or more pre-configured tools with specified versions and execute
+the given closure with PATH configured to use the installed tools.
+Without a version specified, the default version will be used. <em>Caution: a tool's default version may change over time.</em>
+Please contact your Jenkins administrator if you need additional tools or versions made available for installation.
+</p>
