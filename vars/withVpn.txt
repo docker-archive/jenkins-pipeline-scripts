@@ -1,0 +1,7 @@
+<strong>withVpn("vpn-host.example.org") { ... }</strong>
+
+<p>
+Starts a VPN container, runs the given closure, and removes the VPN container. Connects using credentials
+with ID matching "jenkins.$HOST" (e.g. "jenkins.vpn-host.example.org"). Please contact your
+Jenkins administrator if you need credentials added to the system for your project.
+</p>
