@@ -24,7 +24,17 @@ def call(tools, Closure body=null) {
 
       for (int k = 0; k < toolDescriptor.installations.size(); k++) {
         def toolInstallation = toolDescriptor.installations[k]
+        // This is not the tool we're looking for
         if (toolInstallation.name != toolName) { continue; }
+        // We found our tool and it doesn't have different versions
+        if (!toolInstallation.toolVersion) {
+          if (toolVersion) {
+            echo "Tool installer: ${toolName} will be installed but versions are not configured so the version string '${toolVersion}' is being ignored."
+            break
+          } else {
+            continue
+          }
+        }
         if (!toolVersion) {
           toolVersion = toolInstallation.toolVersion.versionsListSource.defaultValue
         }
