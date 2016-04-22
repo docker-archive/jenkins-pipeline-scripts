@@ -5,11 +5,11 @@ def call(tools, Closure body=null) {
     tools = [tools]
   }
   def toolEnv = []
-  def pathEnv = [env.PATH]
+  def pathEnv = []
   def toolNames = []
 
   for (int i = 0; i < tools.size(); i++) {
-    def toolString = tools.get(i)
+    def toolString = tools[i]
 
     def match = (toolString =~ /^([^@]+)(?:@(.+))?$/)
     if (!match) { continue; }
@@ -17,7 +17,7 @@ def call(tools, Closure body=null) {
     def toolName = match[0][1]
     def toolVersion = match[0][2]
 
-    toolNames.add(toolName)
+    toolNames << toolName
 
     // No specified version, look it up
     if (!toolVersion) {
@@ -33,7 +33,7 @@ def call(tools, Closure body=null) {
     }
     // Still possible that we don't have a version
     if (toolVersion) {
-      toolEnv.add(toolName.replaceAll(/\W/, '_').toUpperCase() + "_VERSION=${toolVersion}")
+      toolEnv << toolName.replaceAll(/\W/, '_').toUpperCase() + "_VERSION=${toolVersion}"
     }
   }
   withEnv(toolEnv) {
@@ -41,6 +41,7 @@ def call(tools, Closure body=null) {
       def toolName = toolNames.get(i)
       pathEnv << tool(toolName)
     }
+    pathEnv << env.PATH
     withEnv(["PATH=${pathEnv.join(":")}"]) {
       if (body) { body() }
     }
