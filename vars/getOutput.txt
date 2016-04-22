@@ -1,0 +1,5 @@
+<strong>getOutput("bash -c 'echo get the output from any command'")</strong>
+
+<p>
+Runs the given command and returns the stdout as a string.
+</p>
