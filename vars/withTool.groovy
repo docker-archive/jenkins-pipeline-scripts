@@ -19,15 +19,17 @@ def call(tools, Closure body=null) {
 
     toolNames << toolName
 
-    // No specified version, look it up
-    if (!toolVersion) {
-      for (int j = 0; j < ToolInstallation.all().size(); j++) {
-        def toolDescriptor = ToolInstallation.all()[j]
+    for (int j = 0; j < ToolInstallation.all().size(); j++) {
+      def toolDescriptor = ToolInstallation.all()[j]
 
-        for (int k = 0; k < toolDescriptor.installations.size(); k++) {
-          def toolInstallation = toolDescriptor.installations[k]
-          if (toolInstallation.name != toolName) { continue; }
+      for (int k = 0; k < toolDescriptor.installations.size(); k++) {
+        def toolInstallation = toolDescriptor.installations[k]
+        if (toolInstallation.name != toolName) { continue; }
+        if (!toolVersion) {
           toolVersion = toolInstallation.toolVersion.versionsListSource.defaultValue
+        }
+        if (toolInstallation.hasAdditionalVariables()) {
+          toolEnv.addAll(toolInstallation.additionalVariables.split("\n"))
         }
       }
     }
