@@ -39,7 +39,16 @@ def call(tools, Closure body=null) {
           toolVersion = toolInstallation.toolVersion.versionsListSource.defaultValue
         }
         if (toolInstallation.hasAdditionalVariables()) {
-          toolEnv.addAll(toolInstallation.additionalVariables.split("\n"))
+          def extraVars = toolInstallation.additionalVariables.split("\n")
+          for (int l = 0; l < extraVars.size(); l++) {
+            def extraVar = extraVars.get(l).trim()
+            if (extraVar.size() == 0) { continue; }
+            if (!extraVar.contains('=')) {
+              echo "Ignoring invalid extra variable for ${toolName}: ${extraVar}"
+              continue
+            }
+            toolEnv.add(extraVar)
+          }
         }
       }
     }
@@ -48,14 +57,12 @@ def call(tools, Closure body=null) {
       toolEnv << toolName.replaceAll(/\W/, '_').toUpperCase() + "_VERSION=${toolVersion}"
     }
   }
-  echo "environment for tools: ${toolEnv}"
   withEnv(toolEnv) {
     for (i = 0; i < toolNames.size(); i++) {
       def toolName = toolNames.get(i)
       pathEnv << tool(toolName)
     }
     pathEnv << env.PATH
-    echo "PATH for tools: ${pathEnv}"
     withEnv(["PATH=${pathEnv.join(":")}"]) {
       if (body) { body() }
     }
