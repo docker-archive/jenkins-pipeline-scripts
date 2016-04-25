@@ -41,7 +41,7 @@ def call(tools, Closure body=null) {
         if (toolInstallation.hasAdditionalVariables()) {
           def extraVars = toolInstallation.additionalVariables.split("\n")
           for (int l = 0; l < extraVars.size(); l++) {
-            def extraVar = extraVars.get(l).trim()
+            def extraVar = extraVars[l].trim()
             if (extraVar.size() == 0) { continue; }
             if (!extraVar.contains('=')) {
               echo "Ignoring invalid extra variable for ${toolName}: ${extraVar}"
@@ -59,7 +59,7 @@ def call(tools, Closure body=null) {
   }
   withEnv(toolEnv) {
     for (i = 0; i < toolNames.size(); i++) {
-      def toolName = toolNames.get(i)
+      def toolName = toolNames[i]
       pathEnv << tool(toolName)
     }
     pathEnv << env.PATH
