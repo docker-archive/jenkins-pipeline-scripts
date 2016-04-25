@@ -48,12 +48,14 @@ def call(tools, Closure body=null) {
       toolEnv << toolName.replaceAll(/\W/, '_').toUpperCase() + "_VERSION=${toolVersion}"
     }
   }
+  echo "environment for tools: ${toolEnv}"
   withEnv(toolEnv) {
     for (i = 0; i < toolNames.size(); i++) {
       def toolName = toolNames.get(i)
       pathEnv << tool(toolName)
     }
     pathEnv << env.PATH
+    echo "PATH for tools: ${pathEnv}"
     withEnv(["PATH=${pathEnv.join(":")}"]) {
       if (body) { body() }
     }
