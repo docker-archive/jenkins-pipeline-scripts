@@ -8,7 +8,8 @@ golangTester(
   gocycloMax: "",
   golang_tag: "gimme", // or go_version if specified
   gocov_args: "",
-  max_warnings: 0
+  max_warnings: 0,
+  github_credentials: "docker-jenkins.token.github.com"
 ) {
   // optional
 }

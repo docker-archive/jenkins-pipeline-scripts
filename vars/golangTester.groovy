@@ -1,6 +1,7 @@
 def call(args=null, Closure body=null) {
   args = args ?: [:]
 
+  def githubCredentials = args.get("github_credentials", "docker-jenkins.token.github.com")
   def packageName = args.get("package", null)
   def label = args.get("label", "docker")
   def goVersion = args.get("go_version", null)
@@ -26,6 +27,14 @@ def call(args=null, Closure body=null) {
       def testsPassed
       image.pull()
 
+      withCredentials([[
+        variable: "GITHUB_TOKEN",
+        credentialsId: githubCredentials,
+        $class: "StringBinding",
+      ]]) {
+        sh 'echo "machine github.com login $GITHUB_TOKEN" > net-rc'
+      }
+
       withChownWorkspace {
         withEnv([
           "GOVERSION=${goVersion ?: ''}",
@@ -37,6 +46,7 @@ def call(args=null, Closure body=null) {
             docker run \\
             --rm \\
             -i \\
+            -v "\$(pwd)/net-rc:/root/.netrc" \\
             -v "\$(pwd):/go/src/\$GOPACKAGE" \\
             -v "\$(pwd)/results:/output" \\
             -e "GOVERSION=\$GOVERSION" \\
