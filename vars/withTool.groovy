@@ -16,7 +16,6 @@ def call(tools, Closure body=null) {
 
     def toolName = match[0][1]
     def toolVersion = match[0][2]
-    def hasToolVersions = true
 
     toolNames << toolName
 
@@ -29,17 +28,25 @@ def call(tools, Closure body=null) {
         if (toolInstallation.name != toolName) { continue; }
         // We found our tool and it doesn't have different versions
         if (!toolInstallation.toolVersion) {
-          hasToolVersions = false
           if (toolVersion) {
             echo "Tool installer: '${toolName}' will be installed but versions are not configured so the version string '${toolVersion}' is being ignored."
-            break
-          } else {
-            continue
+            toolVersion = null
+          }
+          break
+        }
+
+        if (!toolVersion) {
+          // Versions are enabled but toolVersion is not set. use default
+          toolVersion = toolInstallation.toolVersion.versionsListSource.defaultValue
+        } else {
+          // Let's check if the request version exists
+          def versionSource = toolInstallation.toolVersion.versionsListSource
+          def availableVersions = versionSource.value.split(versionSource.multiSelectDelimiter)
+          if (!availableVersions.contains(toolVersion)) {
+            throw new Exception("Tool installer: '${toolName}' has no configuration for version '${toolVersion}'")
           }
         }
-        if (!toolVersion) {
-          toolVersion = toolInstallation.toolVersion.versionsListSource.defaultValue
-        }
+
         if (toolInstallation.hasAdditionalVariables()) {
           def extraVars = toolInstallation.additionalVariables.split("\n")
           for (int l = 0; l < extraVars.size(); l++) {
@@ -53,9 +60,6 @@ def call(tools, Closure body=null) {
           }
         }
       }
-    }
-    if (hasToolVersions && !toolVersion) {
-      throw new Exception("Tool installer: '${toolName}' has no configuration for version '${toolVersion}'")
     }
     // Still possible that we don't have a version
     if (toolVersion) {
