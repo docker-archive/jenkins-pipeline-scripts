@@ -10,7 +10,7 @@ def call(credsName=null) {
   }
 
   def ghprbPullId = ""
-  if (env.BRANCH_NAME ~= /^PR-\d+$/) {
+  if (env.BRANCH_NAME =~ /^PR-\d+$/) {
     ghprbPullId = env.BRANCH_NAME[3..-1]
   }
 
