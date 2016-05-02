@@ -16,6 +16,7 @@ def call(tools, Closure body=null) {
 
     def toolName = match[0][1]
     def toolVersion = match[0][2]
+    def hasToolVersions = true
 
     toolNames << toolName
 
@@ -28,8 +29,9 @@ def call(tools, Closure body=null) {
         if (toolInstallation.name != toolName) { continue; }
         // We found our tool and it doesn't have different versions
         if (!toolInstallation.toolVersion) {
+          hasToolVersions = false
           if (toolVersion) {
-            echo "Tool installer: ${toolName} will be installed but versions are not configured so the version string '${toolVersion}' is being ignored."
+            echo "Tool installer: '${toolName}' will be installed but versions are not configured so the version string '${toolVersion}' is being ignored."
             break
           } else {
             continue
@@ -44,13 +46,16 @@ def call(tools, Closure body=null) {
             def extraVar = extraVars[l].trim()
             if (extraVar.size() == 0) { continue; }
             if (!extraVar.contains('=')) {
-              echo "Ignoring invalid extra variable for ${toolName}: ${extraVar}"
+              echo "Ignoring invalid extra variable for '${toolName}': '${extraVar}'"
               continue
             }
             toolEnv.add(extraVar)
           }
         }
       }
+    }
+    if (hasToolVersions && !toolVersion) {
+      throw new Exception("Tool installer: '${toolName}' has no configuration for version '${toolVersion}'")
     }
     // Still possible that we don't have a version
     if (toolVersion) {
