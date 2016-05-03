@@ -9,7 +9,6 @@ def call(credsName=null) {
     }
   }
 
-  def gitRevision = gitCommit()
   def branchName = env.BRANCH_NAME
   def ghprbPullId = ""
   if (branchName =~ /^PR-\d+$/) {
@@ -18,7 +17,7 @@ def call(credsName=null) {
   }
 
   // Set some env variables so codecov detection script works correctly
-  withEnv(["GIT_BRANCH=${branchName}", "GIT_COMMIT=${gitRevision}", "ghprbPullId=${ghprbPullId}"]) {
+  withEnv(["GIT_BRANCH=${branchName}", "ghprbPullId=${ghprbPullId}"]) {
     withCredentials([[$class: 'StringBinding', credentialsId: "${credsName}.codecov-token", variable: 'CODECOV_TOKEN']]) {
       sh 'bash <(curl -s https://codecov.io/bash) || echo "codecov exited with \$?"'
     }
