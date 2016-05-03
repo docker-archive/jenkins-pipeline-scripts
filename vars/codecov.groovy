@@ -20,7 +20,7 @@ def call(credsName=null) {
   // Set some env variables so codecov detection script works correctly
   withEnv(["GIT_BRANCH=${branchName}", "GIT_COMMIT=${gitRevision}", "ghprbPullId=${ghprbPullId}"]) {
     withCredentials([[$class: 'StringBinding', credentialsId: "${credsName}.codecov-token", variable: 'CODECOV_TOKEN']]) {
-      sh "bash -x <(curl -s https://codecov.io/bash) -t \$CODECOV_TOKEN"
+      sh "bash <(curl -s https://codecov.io/bash)"
     }
   }
 }
