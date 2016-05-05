@@ -34,7 +34,7 @@ def call(credsName=null) {
     }
     def gh = GitHub.connectUsingOAuth(githubToken)
     def pr = gh.getRepository(repoName).getPullRequest(env.CHANGE_ID.toInteger())
-    branchName = "${pr.head.user.login}/${pr.head.ref}"
+    branchName = "${pr.head.repo.owner.login}/${pr.head.ref}"
   }
 
   // Set some env variables so codecov detection script works correctly
