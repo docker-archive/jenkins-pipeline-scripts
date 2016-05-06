@@ -85,7 +85,7 @@ def call(args=null, Closure body=null) {
         ]],
         unstableTotalAll: "${maxWarnings}"
       ])
-      archive 'results'
+      archive 'results/**'
       if (body) { body() }
       if (!testsPassed && currentBuild.result && currentBuild.result == 'SUCCESS') {
         currentBuild.result = 'UNSTABLE'
