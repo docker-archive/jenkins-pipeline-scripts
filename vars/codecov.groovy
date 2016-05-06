@@ -30,7 +30,7 @@ def call(credsName=null) {
       credentialsId: "docker-jenkins.token.github.com",
       $class: "StringBinding",
     ]]) {
-      githubToken = getOutput("echo -n \$GITHUB_TOKEN")
+      githubToken = env.GITHUB_TOKEN
     }
     def gh = GitHub.connectUsingOAuth(githubToken)
     def pr = gh.getRepository(repoName).getPullRequest(env.CHANGE_ID.toInteger())
