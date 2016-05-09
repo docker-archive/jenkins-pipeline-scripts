@@ -36,7 +36,7 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
               -e DOCKER_BUILD_PKGS \\
               -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \\
               "${imageId}" \\
-              hack/make.sh ${taskName}
+              hack/make.sh ${taskNames}
           """)
         }
         if (this.versionString == null) {
@@ -46,7 +46,7 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
           echo "Got version string: ${this.versionString}"
         }
         if (body) { body() }
-        echo("${taskName} complete")
+        echo("${taskNames} complete")
         if (doStash) {
           sh "[[ -L bundles/latest ]] && rm bundles/latest"
           def taskNameParts = taskNames.split(' ')
