@@ -5,7 +5,7 @@ def call(args=null, Closure body=null) {
   def packageName = args.get("package", null)
   def label = args.get("label", "docker")
   def goVersion = args.get("go_version", null)
-  def gocycloMax = args.get('gocyclo_max', null)
+  def gocycloMax = args.get('gocyclo_max', "16")
   def testerTag = args.get("golang_tag", goVersion) ?: "gimme"
   def envVars = args.get("env_vars", [])
   def gocovArgs = args.get("gocov_args", "")
