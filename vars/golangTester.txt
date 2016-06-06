@@ -5,7 +5,7 @@ golangTester(
   label: "docker",
   env_vars: ["KEY=value", "FOO=bar"],
   go_version: "",
-  gocyclo_max: "16",
+  gocyclo_max: "20",
   golang_tag: "gimme", // or go_version if specified
   gocov_args: "",
   max_warnings: 0,
