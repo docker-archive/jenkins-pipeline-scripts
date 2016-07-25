@@ -1,0 +1,10 @@
+
+<strong>documentationChecker(docsDir string)</strong>
+
+<p>
+Checks the docsDir markdown files have valid frontmatter, and that links are
+consistent and resolveable. It will skip the check if there are no git changes
+in the specified docs dir and for now will do nothing if the job is a non-PR job.
+</p>
+
+
