@@ -1,0 +1,32 @@
+<pre>
+// Defaults show; only
+s3Archive(
+    files, // required; Ant-style pattern of files to include
+    excludes: '', // Ant-style pattern of files to exclude
+    s3Profile: 'ci@docker-qa.aws', // Talk to Jenkins admins before changing this
+    bucket: "docker-ci-artifacts",
+    region: "us-west-2", // Required if `bucket` is not default value
+    project: '$REPO_OWNER/$REPO_NAME', // Determined from SCM settings.
+    path: '', // A namespace within the project for the files. e.g. binaries might go in 'bin'; test results in 'test-results'
+    ref: gitCommit(), // Option to give a different name for the revision, e.g. "master" or "v1.0.1"
+    fullDestinationPath: null, // If set, the value is used instead of the following variables: bucket, project, path, ref, and includeRef.
+    includeRef: true, // Set to false to leave `ref` in the destination path
+    flatten: false, // Set to true to strip leading path components from uploaded file names
+    gzip: false, // Set to true to gzip contents and set Content-Encoding to gzip.
+    encrypt: false, // Set to true to enable server-side encryption
+    manageArtifacts: true, // Allows Jenkins to treat s3Archive'd artifacts like regular artifacts. There will be links on the build and the artifacts will be deleted when the job is deleted.
+    keepForever: true, // Set to false to allow managed artifacts to be kept past their build's lifetime.
+    uploadOnFailure: false, // Upload files even if the job fails
+    uploadFromSlave: true, // Skip proxy through Jenkins master and upload directly from slave
+    storageClass: 'STANDARD', // can also be 'REDUCED_REDUNDANCY'
+    waitForConcurrentBuildCompletion: false, // Set to true to disable a project uploading two sets of artifacts at the same time.
+    userMetadata: [], // List of 2-element maps like: [[key: "hello", value: "world"], [key: "foo", value: "bar"]]
+)
+</pre>
+
+<p>Upload files to S3.</p>
+<p>
+<b>files</b> is required. By default, they will be uploaded to "${bucket}/${project}/${ref}/${path}/".
+Each component of the path can be controlled via the options shown above, or the entire path can be
+provided with the fullDestinationPath option.
+</p>
