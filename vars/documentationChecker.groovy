@@ -7,7 +7,7 @@
 // documentationChecker("docs")
 
 // docsDir ~~ the subdirectory within your repo that the documentation resides
-def documentationChecker(docsDir) {
+def call(String docsDir) {
   if (env.CHANGE_ID != null) {
     stage "docs PR checker"
 
