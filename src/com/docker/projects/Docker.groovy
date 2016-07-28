@@ -52,8 +52,8 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
           def taskNameParts = taskNames.split(' ')
           for (i = 0; i < taskNameParts.size(); i++) {
             def taskName = taskNameParts.get(i)
-            stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}/**")
-            archive(includes: "bundles/${this.versionString}/${taskName}/**")
+            stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}*/**")
+            archive(includes: "bundles/${this.versionString}/${taskName}*/**")
           }
         }
       }
