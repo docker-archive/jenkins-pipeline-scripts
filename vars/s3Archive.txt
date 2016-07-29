@@ -30,3 +30,10 @@ s3Archive(
 Each component of the path can be controlled via the options shown above, or the entire path can be
 provided with the fullDestinationPath option.
 </p>
+
+<p>Basic example usage:</p>
+<pre>
+// In the github.com/docker/docker.git project with git SHA = deadbeef:
+s3Archive("bundles/**")
+</pre>
+<p>This will put the contents of the bundles directory at s3://docker-ci-artifacts/docker/docker/deadbeef/</p>
