@@ -8,21 +8,18 @@ def versionString = null
 @Field
 def imageId = null
 
-def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null) {
+def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
   return {
     wrappedNode(label: nodeType) {
       deleteDir()
       checkout(scm)
       echo "Pulling image ${imageId}"
       docker.image(imageId).pull()
-      s3Fetch(destination: "bundles/", required: false)
+      s3Fetch(destinationPath: "bundles/", path: "bundles/")
       withEnv([
         "KEEPBUNDLE=true",
         ] + (extraEnv ?: [])
       ) {
-        for (int i = 0; i < depends.size(); i++) {
-          unstash depends.get(i)
-        }
         withChownWorkspace {
           sh("""
             export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
@@ -46,11 +43,8 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
         }
         if (body) { body() }
         echo("${taskNames} complete")
-        if (doStash) {
-          sh "[[ -L bundles/latest ]] && rm bundles/latest"
-            s3Archive(files: "bundles/")
-          }
-        }
+        sh "[[ -L bundles/latest ]] && rm bundles/latest"
+        s3Archive(sourcePath: "bundles/", path: "bundles/")
       }
     }
   }
@@ -66,7 +60,7 @@ def junitArchive(task) {
 
 def testTask(testName, label=null) {
   def needsXunit = testName != "test-docker-py"
-  return this.makeTask(label ?: "docker", testName, false, ["binary"], []) {
+  return this.makeTask(label ?: "docker", testName, []) {
     if (needsXunit) { this.go2xunit(testName) }
     this.junitArchive(testName)
   }
@@ -77,15 +71,15 @@ def integrationTask(label) {
 }
 
 def packageTask(pkgTask, distro) {
-  return this.makeTask("docker", "build-${pkgTask}", true, ["dynbinary"], ["DOCKER_BUILD_PKGS=${distro}"])
+  return this.makeTask("docker", "build-${pkgTask}", ["DOCKER_BUILD_PKGS=${distro}"])
 }
 
 def buildTask(buildTaskName) {
-  return this.makeTask("docker", buildTaskName, true, [], [])
+  return this.makeTask("docker", buildTaskName, [])
 }
 
 def validateTask(validateTaskName) {
-  return this.makeTask("docker", validateTaskName, false, [], [])
+  return this.makeTask("docker", validateTaskName, [])
 }
 
 return this
