@@ -19,14 +19,9 @@ def s3UpdateOptions(options) {
   }
   options.refPathPart = options.includeRef ? "${options.ref}/" : ""
   if (options.fullRemotePath == null) {
-    options.fullRemotePath = "s3://${options.bucket}/${options.project}/${options.refPathPart}/"
+    options.fullRemotePath = "${options.bucket}/${options.project}/${options.refPathPart}/${options.path}/"
   }
-  if (options.path) {
-    options.fullRemotePath += "${options.path}/"
-  }
-  if (options.fullRemotePath.endsWith("//")) {
-    options.fullRemotePath = options.fullRemotePath.substring(0, options.fullRemotePath.length() - 1)
-  }
+  options.fullRemotePath = "s3://" + options.fullRemotePath.replaceAll('//', '/')
 }
 
 def s3Sync(options, src, dst) {
