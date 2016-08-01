@@ -17,7 +17,7 @@ def s3UpdateOptions(options) {
   if (options.includeRef == null) {
     options.includeRef = true
   }
-  options.refPathPart = options.includeRef ? "${refName}/" : ""
+  options.refPathPart = options.includeRef ? "${options.ref}/" : ""
   if (options.fullRemotePath == null) {
     options.fullRemotePath = "${options.bucket}/${options.project}/${options.refPathPart}${options.path}/"
   }
