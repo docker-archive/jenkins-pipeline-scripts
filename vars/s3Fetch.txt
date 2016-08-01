@@ -1,0 +1,29 @@
+<pre>
+// Defaults show; only
+s3Archive(
+    destinationPath = '.',
+    bucket = "docker-ci-artifacts",
+    region = "us-west-2", // NOTE: this default is only provided when bucket is "docker-ci-artifacts"
+    credentials = "ci@docker-qa.aws", // Credentials ID of an AWS Credentials item.
+    project = null, // determined by SCM url. e.g., docker/docker for github.com/docker/docker.git
+    path = "", // additional partial path to append to remote path
+    ref = gitCommit(), // Use this to override the SHA if necessary.
+    includeRef = true, // by default, the SCM ref is part of the remote desination. set to false to disable this
+    fullRemotePath = null, // Use this to set your own destination. this overrides: bucket, project, path, ref, includeRef, and path.
+    s3SyncArgs = null, // Set additional arguments for `aws s3 sync` command. See: http://docs.aws.amazon.com/cli/latest/reference/s3/sync.html
+)
+</pre>
+
+<p>Fetch files from S3.</p>
+<p>
+<b>destinationPath</b> is recommended. By default, files will be downloaded from "${bucket}/${project}/${ref}/${path}/".
+Each component of the path can be controlled via the options shown above, or the entire path can be
+provided with the fullRemotePath option.
+</p>
+
+<p>Basic example usage:</p>
+<pre>
+// In the github.com/docker/docker.git project with git SHA = deadbeef:
+s3Fetch(destinationPath: "bundles/")
+</pre>
+<p>This will put the contents of s3://docker-ci-artifacts/docker/docker/deadbeef/ in the bundles directory.</p>

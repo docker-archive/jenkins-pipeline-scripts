@@ -15,10 +15,9 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
       checkout(scm)
       echo "Pulling image ${imageId}"
       docker.image(imageId).pull()
-
+      s3Fetch(destination: "bundles/", required: false)
       withEnv([
         "KEEPBUNDLE=true",
-        "TESTFLAGS=-v",
         ] + (extraEnv ?: [])
       ) {
         for (int i = 0; i < depends.size(); i++) {
@@ -49,11 +48,7 @@ def makeTask(nodeType, taskNames, doStash, depends, extraEnv, Closure body=null)
         echo("${taskNames} complete")
         if (doStash) {
           sh "[[ -L bundles/latest ]] && rm bundles/latest"
-          def taskNameParts = taskNames.split(' ')
-          for (i = 0; i < taskNameParts.size(); i++) {
-            def taskName = taskNameParts[i]
-            stash(name: taskName, includes: "bundles/${this.versionString}/${taskName}*/**")
-            archive(includes: "bundles/${this.versionString}/${taskName}*/**")
+            s3Archive(files: "bundles/")
           }
         }
       }
