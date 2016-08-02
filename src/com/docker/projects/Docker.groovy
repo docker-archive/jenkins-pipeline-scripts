@@ -17,7 +17,7 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
       docker.image(imageId).pull()
       s3Fetch(destinationPath: "bundles/", path: "bundles/")
       withEnv([
-        "KEEPBUNDLE=true",
+        "KEEPBUNDLE=true", "SKIPBUNDLE=true",
         ] + (extraEnv ?: [])
       ) {
         withChownWorkspace {
@@ -28,6 +28,7 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
               --rm \\
               --privileged \\
               -e KEEPBUNDLE \\
+              -e SKIPBUNDLE \\
               -e TESTFLAGS \\
               -e DOCKER_BUILD_PKGS \\
               -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \\
