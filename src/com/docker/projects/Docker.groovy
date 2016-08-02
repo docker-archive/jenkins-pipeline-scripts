@@ -15,9 +15,12 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
       checkout(scm)
       echo "Pulling image ${imageId}"
       docker.image(imageId).pull()
+      s3Fetch(destinationPath: "ci-metadata/", path: "ci-metadata/")
       s3Fetch(destinationPath: "bundles/", path: "bundles/")
+      sh('''( [[ -f ci-metadata/executable-files.txt ]] && chmod -vv u+x $( cat ci-metadata/executable-files.txt ) && rm -rf ci-metadata ) ||:''')
       withEnv([
-        "KEEPBUNDLE=true", "SKIPBUNDLE=true",
+        "KEEPBUNDLE=true",
+        "SKIPBUNDLE=true",
         ] + (extraEnv ?: [])
       ) {
         withChownWorkspace {
@@ -44,7 +47,9 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
         }
         if (body) { body() }
         echo("${taskNames} complete")
-        sh "[[ -L bundles/latest ]] && rm bundles/latest"
+        sh("[[ -L bundles/latest ]] && rm bundles/latest")
+        sh("mkdir -p ci-metadata && find bundles -type f -executable | tee ci-metadata/executable-files.txt")
+        s3Archive(sourcePath: "ci-metadata/", path: "ci-metadata/")
         s3Archive(sourcePath: "bundles/", path: "bundles/")
       }
     }

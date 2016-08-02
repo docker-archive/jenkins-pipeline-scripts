@@ -19,7 +19,7 @@ def s3UpdateOptions(options) {
   }
   options.refPathPart = options.includeRef ? "${options.ref}/" : ""
   if (options.fullRemotePath == null) {
-    options.fullRemotePath = "${options.bucket}/${options.project}/${options.refPathPart}/${options.path}/"
+    options.fullRemotePath = "${options.bucket}/${options.project}/${options.refPathPart}/${options.path}"
   }
   options.fullRemotePath = "s3://" + options.fullRemotePath.replaceAll('//', '/')
 }
