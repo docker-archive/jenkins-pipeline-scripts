@@ -48,6 +48,17 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
         if (body) { body() }
         echo("${taskNames} complete")
         sh("[[ -L bundles/latest ]] && rm bundles/latest")
+        sh('''
+          find bundles -type l -print0 | while read -d $'\0' f ; do
+            echo "found link $f -> $(readlink "$f")"
+            target="$( dirname "$f" )/$( readlink "$f" )"
+            if [[ -e "$target" ]] ; then
+              [[ -d "$target" ]] && CP_FLAGS="-R" && RM_FLAGS="-r"
+              mv "$f" "$f.lnk" && cp $CP_FLAGS "$target" "$f" && rm $RM_FLAGS "$f.lnk"
+            fi
+            echo "Realized symlink for: $f -> $target"
+          done
+        ''')
         sh("mkdir -p ci-metadata && find bundles -type f -executable | tee ci-metadata/executable-files.txt")
         s3Archive(sourcePath: "ci-metadata/", path: "ci-metadata/")
         s3Archive(sourcePath: "bundles/", path: "bundles/")
