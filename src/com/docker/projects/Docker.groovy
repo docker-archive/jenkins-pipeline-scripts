@@ -18,11 +18,18 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
       s3Fetch(destinationPath: "ci-metadata/", path: "ci-metadata/")
       s3Fetch(destinationPath: "bundles/", path: "bundles/")
       sh('''( [[ -f ci-metadata/executable-files.txt ]] && chmod -vv u+x $( cat ci-metadata/executable-files.txt ) && rm -rf ci-metadata ) ||:''')
-      withEnv([
+      def envParts = [
         "KEEPBUNDLE=true",
         "SKIPBUNDLE=true",
-        ] + (extraEnv ?: [])
-      ) {
+      ]
+      if (extraEnv) {
+        try {
+          envParts += extraEnv
+        } catch (Exception exc) {
+          echo "Couldn't glue together extra env, ignoring. ${extraEnv}; ${exc}"
+        }
+      }
+      withEnv(envParts) {
         withChownWorkspace {
           sh("""
             export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
