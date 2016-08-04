@@ -17,7 +17,9 @@ def call(String docsDir) {
     branch = tokens[2]
     sha = gitCommit()
     imageName = "${repo}/${branch}:${env.BUILD_ID}"
+    imageName = imageName.toLowerCase()
     containerName = "${repo}-${branch}-${env.BUILD_ID}"
+    containerName = containerName.toLowerCase()
 
     sh "env > env.txt" // in case I need to debug
 
