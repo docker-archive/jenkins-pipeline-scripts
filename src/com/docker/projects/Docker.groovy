@@ -78,6 +78,8 @@ def junitArchive(task) {
 def testTask(testName, label=null) {
   def needsXunit = testName != "test-docker-py"
   return this.makeTask(label ?: "docker", testName, []) {
+    // Need to refresh timestamps else junit archiver will die.
+    sh "find 'bundles/${this.versionString}/${testName}' -type f -print0 | xargs -0 touch"
     if (needsXunit) { this.go2xunit(testName) }
     this.junitArchive(testName)
   }
