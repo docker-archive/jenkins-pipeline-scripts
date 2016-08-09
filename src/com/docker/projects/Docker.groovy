@@ -46,7 +46,7 @@ def makeTask(nodeType, taskName, extraEnv, Closure body=null) {
           echo "Got version string: ${this.versionString}"
         }
         if (body) { body() }
-        echo("${taskNames} complete")
+        echo("${taskName} complete")
         sh("[[ -L bundles/latest ]] && rm bundles/latest")
         sh('''
           find bundles -type l -print0 | while read -d $'\0' f ; do
