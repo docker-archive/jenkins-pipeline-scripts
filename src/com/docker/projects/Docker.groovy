@@ -8,7 +8,7 @@ def versionString = null
 @Field
 def imageId = null
 
-def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
+def makeTask(nodeType, taskName, extraEnv, Closure body=null) {
   return {
     wrappedNode(label: nodeType) {
       deleteDir()
@@ -21,6 +21,7 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
       def envParts = [
         "KEEPBUNDLE=true",
         "SKIPBUNDLE=true",
+        "DOCKER_IMAGE=${imageId}",
       ]
       if (extraEnv) {
         try {
@@ -30,21 +31,13 @@ def makeTask(nodeType, taskNames, extraEnv, Closure body=null) {
         }
       }
       withEnv(envParts) {
-        withChownWorkspace {
-          sh("""
-            export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
-            docker run \\
-              -i \\
-              --rm \\
-              --privileged \\
-              -e KEEPBUNDLE \\
-              -e SKIPBUNDLE \\
-              -e TESTFLAGS \\
-              -e DOCKER_BUILD_PKGS \\
-              -v "\$(pwd)/bundles:/go/src/github.com/docker/docker/bundles" \\
-              "${imageId}" \\
-              hack/make.sh ${taskNames}
-          """)
+        withTool(["jo", "jq", "git-appraise"]) {
+          withChownWorkspace {
+            sh("""
+              export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
+              make -e ci-${taskName}
+            """)
+          }
         }
         if (this.versionString == null) {
           sh("pushd bundles && ls | grep -v latest > ../version-string.txt && popd")
@@ -93,11 +86,11 @@ def testTask(testName, label=null) {
 }
 
 def integrationTask(label) {
-  return this.testTask("test-integration-cli", label)
+  return this.testTask("test-integration-cli", label, ["CI_TASK=test-integration-cli/${label}"])
 }
 
 def packageTask(pkgTask, distro) {
-  return this.makeTask("docker", "build-${pkgTask}", ["DOCKER_BUILD_PKGS=${distro}"])
+  return this.makeTask("docker", "${pkgTask}", ["DOCKER_BUILD_PKGS=${distro}", "CI_TASK=${pkgTask}/${distro}"])
 }
 
 def buildTask(buildTaskName) {
