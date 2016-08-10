@@ -1,6 +1,5 @@
 <pre>
-// Defaults show; only
-s3Archive(
+s3Fetch(
     destinationPath = '.',
     bucket = "docker-ci-artifacts",
     region = "us-west-2", // NOTE: this default is only provided when bucket is "docker-ci-artifacts"
