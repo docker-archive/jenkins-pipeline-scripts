@@ -17,7 +17,7 @@ def makeTask(nodeType, taskName, extraEnv, Closure body=null) {
       docker.image(imageId).pull()
       s3Fetch(destinationPath: "ci-metadata/", path: "ci-metadata/")
       s3Fetch(destinationPath: "bundles/", path: "bundles/")
-      sh('''( [[ -f ci-metadata/executable-files.txt ]] && chmod -vv u+x $( cat ci-metadata/executable-files.txt ) && rm -rf ci-metadata ) ||:''')
+      sh('''( [[ -f ci-metadata/executable-files.txt ]] && chmod -vv u+x $( cat ci-metadata/executable-files.txt ) ) || true; rm -rf ci-metadata''')
       def envParts = [
         "KEEPBUNDLE=true",
         "SKIPBUNDLE=true",
