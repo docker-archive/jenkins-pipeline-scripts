@@ -33,10 +33,12 @@ def makeTask(nodeType, taskName, extraEnv, Closure body=null) {
       withEnv(envParts) {
         withTool(["jo", "jq", "git-appraise"]) {
           withChownWorkspace {
-            sh("""
-              export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
-              make -e ci-${taskName}
-            """)
+            sshagent(['docker-jenkins.github.ssh']) {
+              sh("""
+                export DOCKER_GRAPHDRIVER=\$( docker info | awk -F ': ' '\$1 == "Storage Driver" { print \$2; exit }' )
+                make -e ci-${taskName}
+              """)
+            }
           }
         }
         if (this.versionString == null) {
