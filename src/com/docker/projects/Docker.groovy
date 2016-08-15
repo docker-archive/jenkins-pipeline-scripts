@@ -77,9 +77,9 @@ def junitArchive(task) {
   step([$class: 'JUnitResultArchiver', testResults: "bundles/${this.versionString}/${task}/test.xml", keepLongStdio: true])
 }
 
-def testTask(testName, label=null) {
+def testTask(testName, label=null, extraEnv=null) {
   def needsXunit = testName != "test-docker-py"
-  return this.makeTask(label ?: "docker", testName, []) {
+  return this.makeTask(label ?: "docker", testName, extraEnv ?: []) {
     // Need to refresh timestamps else junit archiver will die.
     sh "find 'bundles/${this.versionString}/${testName}' -type f -print0 | xargs -0 touch"
     if (needsXunit) { this.go2xunit(testName) }
