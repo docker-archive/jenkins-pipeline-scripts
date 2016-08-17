@@ -69,7 +69,7 @@ def makeTask(nodeType, taskName, extraEnv, Closure body=null) {
 }
 
 def go2xunit(task) {
-  sh("cd bundles/${this.versionString}/${task} && docker run --rm bmangold/go2xunit < test-stdout.log > test.xml")
+  sh("cd bundles/${this.versionString}/${task} && [ -e test-stdout.log ] && docker run --rm bmangold/go2xunit < test-stdout.log > test.xml")
 }
 
 def junitArchive(task) {
