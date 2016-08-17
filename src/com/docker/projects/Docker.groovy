@@ -87,11 +87,11 @@ def testTask(testName, label=null, extraEnv=null) {
 }
 
 def integrationTask(label) {
-  return this.testTask("test-integration-cli", label, ["CI_TASK=test-integration-cli/${label}"])
+  return this.testTask("test-integration-cli", label, ["CI_TASK=test-integration-cli/JENKINS_LABEL=${label}"])
 }
 
 def packageTask(pkgTask, distro) {
-  return this.makeTask("docker", "${pkgTask}", ["DOCKER_BUILD_PKGS=${distro}", "CI_TASK=${pkgTask}/${distro}"])
+  return this.makeTask("docker", "${pkgTask}", ["DOCKER_BUILD_PKGS=${distro}", "CI_TASK=${pkgTask}/DOCKER_BUILD_PKGS=${distro}"])
 }
 
 def buildTask(buildTaskName) {
