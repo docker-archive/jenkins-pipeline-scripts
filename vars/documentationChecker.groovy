@@ -8,48 +8,53 @@
 
 // docsDir ~~ the subdirectory within your repo that the documentation resides
 def call(String docsDir) {
-  if (env.CHANGE_ID != null) {
-    stage "docs PR checker"
+  stage "docs PR checker"
 
-    tokens = "${env.JOB_NAME}".tokenize('/')
-    org = tokens[0]
-    repo = tokens[1]
-    branch = tokens[2]
-    pr = "${env.CHANGE_ID}"
-    sha = gitCommit()
-    imageName = "${repo}/${branch}:${env.BUILD_ID}"
-    imageName = imageName.toLowerCase()
-    containerName = "${repo}-${branch}-${env.BUILD_ID}"
-    containerName = containerName.toLowerCase()
+  tokens = "${env.JOB_NAME}".tokenize('/')
+  org = tokens[0]
+  repo = tokens[1]
+  branch = tokens[2]
+  sha = gitCommit()
+  imageName = "${repo}/${branch}:${env.BUILD_ID}"
+  imageName = imageName.toLowerCase()
+  containerName = "${repo}-${branch}-${env.BUILD_ID}"
+  containerName = containerName.toLowerCase()
 
-    changes = getOutput("git log origin/master..${sha} ${docsDir}").trim()
-    if (changes.size() == 0) {
-      echo "no changes found in ${docsDir}"
-      return
+  changes = getOutput("git log origin/master..${sha} ${docsDir}").trim()
+  if (changes.size() == 0) {
+    echo "no changes found in ${docsDir}"
+    return
+  }
+
+  try {
+    echo changes
+    if (env.CHANGE_ID) {
+      slackSend channel: '#docs-automation', message: "Starting docs test of - <${env.CHANGE_URL}|${repo} PR#${env.CHANGE_ID}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
+    } else {
+      echo "Skipping slack start message; no CHANGE_ID"
     }
-
+    sh "docker pull docs/base:oss"
     try {
-      echo changes
-      slackSend channel: '#docs-automation', message: "Starting docs test of - <${env.CHANGE_URL}|${repo} PR#${pr}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
-      sh "docker pull docs/base:oss"
+      sh "docker build -t ${imageName} ${docsDir}"
       try {
-        sh "docker build -t ${imageName} ${docsDir}"
-        try {
-          sh "docker run --name=${containerName} ${imageName}"
+        sh "docker run --name=${containerName} ${imageName}"
 
-          // TODO: summarize the changes & errors (these are files used by GHPRB and the summary plugin
-          sh "docker cp ${containerName}:/validate.junit.xml ."
-          sh "docker cp ${containerName}:/docs/markdownlint.summary.txt ."
+        // TODO: summarize the changes & errors (these are files used by GHPRB and the summary plugin
+        sh "docker cp ${containerName}:/validate.junit.xml ."
+        sh "docker cp ${containerName}:/docs/markdownlint.summary.txt ."
 
-          //setGitHubPullRequestStatus message: "docs test complete"
-        } finally {
-          sh "docker rm -f ${containerName}"
-        }
+        //setGitHubPullRequestStatus message: "docs test complete"
       } finally {
-        sh "docker rmi -f ${imageName}"
+        sh "docker rm -f ${containerName}"
       }
-    } catch (err) {
-      slackSend channel: '#docs-automation', message: "BUILD FAILURE: @${env.CHANGE_AUTHOR} - <${env.CHANGE_URL}|${repo} PR#${pr}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
+    } finally {
+      sh "docker rmi -f ${imageName}"
+    }
+  } catch (err) {
+    if (env.CHANGE_ID) {
+      slackSend channel: '#docs-automation', message: "BUILD FAILURE: @${env.CHANGE_AUTHOR} - <${env.CHANGE_URL}|${repo} PR#${env.CHANGE_ID}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
+    } else {
+      echo "Skipping slack error message; no CHANGE_ID"
     }
   }
 }
