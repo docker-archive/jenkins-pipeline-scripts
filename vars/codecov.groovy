@@ -13,7 +13,7 @@ def call(credsName=null) {
 
   def branchName = env.BRANCH_NAME
   if (env.CHANGE_ID) {
-    def repoUrl = getOutput("git config --get remote.origin.url")
+    def repoUrl = sh script: "git config --get remote.origin.url", returnStdout: true
     // Need to get name from url, supports these variants:
     //  git@github.com:docker/docker.git -> docker/docker
     //  git://github.com/docker/docker.git -> docker/docker
