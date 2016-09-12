@@ -16,6 +16,7 @@ def call(tools, Closure body=null) {
 
     def toolName = match[0][1]
     def toolVersion = match[0][2]
+    match = null
 
     toolNames << toolName
 
