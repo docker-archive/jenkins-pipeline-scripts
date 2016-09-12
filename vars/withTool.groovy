@@ -21,10 +21,9 @@ def call(tools, Closure body=null) {
     toolNames << toolName
 
     for (int j = 0; j < ToolInstallation.all().size(); j++) {
-      def toolDescriptor = ToolInstallation.all()[j]
-
-      for (int k = 0; k < toolDescriptor.installations.size(); k++) {
-        def toolInstallation = toolDescriptor.installations[k]
+      def installations = ToolInstallation.all()[j].installations
+      for (int k = 0; k < installations.size(); k++) {
+        def toolInstallation = installations[k]
         // This is not the tool we're looking for
         if (toolInstallation.name != toolName) { continue; }
         // We found our tool and it doesn't have different versions
@@ -60,6 +59,7 @@ def call(tools, Closure body=null) {
             toolEnv.add(extraVar)
           }
         }
+        toolInstallation = null
       }
     }
     // Still possible that we don't have a version
