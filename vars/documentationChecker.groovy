@@ -30,8 +30,8 @@ def call(String docsDir) {
       if (env.CHANGE_ID) {
         try {
           slackSend channel: '#docs-automation', message: "Starting docs test of - <${env.CHANGE_URL}|${repo} PR#${env.CHANGE_ID}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
-        } catch (err) {
-          echo "Failed to send start message to slack: ${err.toString()}"
+        } catch (java.lang.Throwable err1) {
+          echo "Failed to send start message to slack: ${err1}"
         }
       } else {
         echo "Skipping slack start message; no CHANGE_ID"
@@ -53,12 +53,12 @@ def call(String docsDir) {
       } finally {
         sh "docker rmi -f ${imageName}"
       }
-    } catch (err) {
+    } catch (java.lang.Throwable err2) {
       if (env.CHANGE_ID) {
         try {
           slackSend channel: '#docs-automation', message: "BUILD FAILURE: @${env.CHANGE_AUTHOR} - <${env.CHANGE_URL}|${repo} PR#${env.CHANGE_ID}> : ${env.CHANGE_TITLE}- see <${env.BUILD_URL}/console|the Jenkins console for job ${env.BUILD_ID}>"
-        } catch (err) {
-          echo "Failed to send failure message to slack: ${err.toString()}"
+        } catch (java.lang.Throwable err3) {
+          echo "Failed to send failure message to slack: ${err3}"
         }
       } else {
         echo "Skipping slack error message; no CHANGE_ID"
