@@ -1,0 +1,5 @@
+<strong>Deprecated</strong>
+
+<p>
+Use the <code>returnStdout</code> option of <code>sh</code> instead.
+</p>
