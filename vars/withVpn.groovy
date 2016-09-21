@@ -21,7 +21,7 @@ def call(vpnHost, Closure body=null) {
           -e VPN_USERNAME \\
           -e VPN_PASSWORD \\
           --net=host \\
-          ${vpnImage.id}
+          ${vpnImage.imageName()}
       """
     }
 

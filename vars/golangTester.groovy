@@ -78,7 +78,7 @@ def call(args=null, Closure body=null) {
         $class: 'WarningsPublisher',
         parserConfigurations: [[
           parserName: "Go Lint",
-          pattern: "results/fmt.txt,results/lint.txt,results/cyclo.txt",
+          pattern: "results/fmt.txt,results/lint.txt,results/cyclo.txt,results/ineffassign.txt",
         ], [
           parserName: "Go Vet",
           pattern: "results/vet.txt"
