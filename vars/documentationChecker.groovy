@@ -19,7 +19,7 @@ def call(String docsDir) {
     containerName = "${repo}-${branch}-${env.BUILD_ID}"
     containerName = containerName.toLowerCase()
 
-    changes = getOutput("git log origin/master..${sha} -- ${docsDir}").trim()
+    changes = sh(script: "git log origin/master..${sha} -- ${docsDir}", returnStdout: true).trim()
     if (changes.size() == 0) {
       echo "no changes found in ${docsDir}"
       return

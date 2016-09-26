@@ -1,3 +1,4 @@
 String call(cmd) {
-  sh(script: cmd, returnStdout: true)
+  echo 'getOutput is deprecated, just use the returnStdout option to sh'
+  sh script: cmd, returnStdout: true
 }
