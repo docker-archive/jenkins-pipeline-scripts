@@ -3,3 +3,11 @@ jenkins-pipeline-scripts
 
 This repository contains helper functions and classes to be used with the Jenkins Pipeline Plugin.
 This repository is used on https://jenkins.dockerproject.org and other Jenkins instances managed by Docker, Inc.
+
+To use this library from your `Jenkinsfile`,
+make sure you have installed the _GitHub Organization Folder_ in version 1.5 or later,
+then start off with:
+
+```groovy
+@Library('github.com/docker/jenkins-pipeline-scripts') _
+```
