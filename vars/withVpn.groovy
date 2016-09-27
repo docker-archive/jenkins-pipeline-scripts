@@ -1,7 +1,11 @@
 def call(vpnHost, Closure body=null) {
   def vpnImage = docker.image("dckr/vpn-client")
   def vpnContainerName = "${env.BUILD_TAG}-vpn-client"
-  vpnImage.pull()
+  withEnv(["DOCKER_CONFIG=${sh(script: 'pwd', returnStdout:true)}/.docker"]) {
+    withDockerRegistry(credentialsId: "dockerbuildbot-index.docker.io") {
+      vpnImage.pull()
+    }
+  }
   try {
     // Start VPN client for stage
     withCredentials([[
