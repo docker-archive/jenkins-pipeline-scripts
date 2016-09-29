@@ -40,7 +40,7 @@ def call(String docsDir) {
       try {
         sh "docker build -t ${imageName} ${docsDir}"
         try {
-          sh "docker run --name=${containerName} ${imageName}"
+          sh "docker run --name=${containerName} ${imageName} bash /docs/validate.sh"
 
           // TODO: summarize the changes & errors (these are files used by GHPRB and the summary plugin
           sh "docker cp ${containerName}:/validate.junit.xml ."
