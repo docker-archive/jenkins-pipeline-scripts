@@ -27,7 +27,7 @@ def call(credsName=null) {
     def githubToken
     withCredentials([[
       variable: "GITHUB_TOKEN",
-      credentialsId: "docker-jenkins.token.github.com",
+      credentialsId: "docker-ci-scanner.token.github.com",
       $class: "StringBinding",
     ]]) {
       githubToken = env.GITHUB_TOKEN
