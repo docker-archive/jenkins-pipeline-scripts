@@ -1,0 +1,10 @@
+
+<strong>dockerImageTagToDigest(String imageName, String credentialsId="dockerbuildbot-hub.docker.com")</strong>
+
+<p>
+Uses the Docker Hub API to convert an image name to its unique identifier. Example:
+
+dockerImageTagToDigest("dockerqa/jo") -> "dockerqa/jo@sha256:b62d281f32df8cf006a87b7516cfe0dac7f350372cb2c1a26b0728686fd78480"
+<br/>
+dockerImageTagToDigest("something/thatdoesnt:exist") -> false
+</p>
