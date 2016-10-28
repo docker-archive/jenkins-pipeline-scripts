@@ -36,12 +36,12 @@ def call(String imageName, String credentialsId="dockerbuildbot-hub.docker.com")
       def params = [
         service: "registry.docker.io",
         scope: "repository:${repo}:pull",
-        account: env.__JPIE_DOCKERHUB_USERNAME
+        account: env.__JP_DOCKERHUB_USERNAME
       ]
       token = sh(
         returnStdout: true,
         script: """set +x; set -o pipefail; curl -sSl \\
-        -u "\$__JPIE_DOCKERHUB_USERNAME:\$__JPIE_DOCKERHUB_PASSWORD" \\
+        -u "\$__JP_DOCKERHUB_USERNAME:\$__JP_DOCKERHUB_PASSWORD" \\
         "https://auth.docker.io/token?${urlEncode(params)}" \\
         | jq -r .token"""
       ).trim()
