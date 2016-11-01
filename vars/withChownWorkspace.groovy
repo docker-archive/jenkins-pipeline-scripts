@@ -6,7 +6,9 @@ def call(Closure body=null) {
     try {
       echo "chowning workspace"
       sh 'docker run --rm -v $(pwd):/workspace busybox chown -R "$(id -u):$(id -g)" /workspace'
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      println e
+    }
   }
   retVal
 }
