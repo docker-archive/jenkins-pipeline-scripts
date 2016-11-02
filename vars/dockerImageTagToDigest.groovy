@@ -15,13 +15,14 @@ def call(String imageName, String credentialsId="dockerbuildbot-hub.docker.com")
     // For some reason just automatically fixing this doesn't work. not sure why :(
     throw new Exception("Specify image name with 'library/${imageName}' instead of bare '${imageName}'")
   }
-  def imageNameParts = imageName.split(":", 1)
-  def repo = imageNameParts[0]
+
+  def repo
   def tag
-  if (imageNameParts.size() == 2) {
-    tag = imageNameParts[1]
+
+  if (imageName.contains(":")) {
+    (repo, tag) = imageName.split(":", 2)
   } else {
-    tag = 'latest'
+    (repo, tag) = [imageName, "latest"]
   }
 
   String token = null
