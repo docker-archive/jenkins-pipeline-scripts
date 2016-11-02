@@ -1,10 +1,11 @@
-<strong>wrappedNode(label: null, registryCreds: "dockerbuildbot-index.docker.io") { ... }</strong>
+<strong>wrappedNode(label: null, registryCreds: "dockerbuildbot-index.docker.io", cleanWorkspace: false) { ... }</strong>
 
 <p>
 Runs the given closure on a node matching <code>label</code> with the following behaviors:
 <ul>
 <li>Timestamps in build output</li>
 <li>Colored output</li>
-<li>Logged into the Docker Registry with the credentials specified by thegiven ID</li>
+<li>Logged into the Docker Registry with the credentials specified by the given ID</li>
+<li>If cleanWorkspace is true, the workspace is removed (chowning the directory first).</li>
 </ul>
 </p>
