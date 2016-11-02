@@ -11,18 +11,23 @@ def urlEncode(Map map) {
 }
 
 def call(String imageName, String credentialsId="dockerbuildbot-hub.docker.com") {
+  if (imageName.contains("@")) {
+    echo "dockerImageTagToDigest: ${imageName} appears to be a digest. Returning it unmodified."
+    return imageName
+  }
+
   if (!imageName.contains("/")) {
     // For some reason just automatically fixing this doesn't work. not sure why :(
     throw new Exception("Specify image name with 'library/${imageName}' instead of bare '${imageName}'")
   }
 
-  def repo
-  def tag
+  def repo = imageName
+  def tag = 'latest'
 
   if (imageName.contains(":")) {
-    (repo, tag) = imageName.split(":", 2)
-  } else {
-    (repo, tag) = [imageName, "latest"]
+    def imageNameParts = imageName.split(":", 2)
+    repo = imageNameParts[0]
+    tag = imageNameParts[1]
   }
 
   String token = null
