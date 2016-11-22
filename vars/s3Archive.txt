@@ -1,5 +1,5 @@
 <pre>
-// Defaults show; only
+// Defaults shown; none are required but sourcePath is recommended.
 s3Archive(
     sourcePath = '.',
     bucket = "docker-ci-artifacts",
