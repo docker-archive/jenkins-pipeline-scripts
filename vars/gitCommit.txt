@@ -2,4 +2,3 @@
 
 <p>Determines the current git revision in the workspace. The revision is returned directly as a string and also set as the environment variable <code>GIT_COMMIT</code>.</p>
 <p>This function must be executed in a <code>node</code> context as it requires a workspace.</p>
-<p>This function performs nontrivial actions so it should be called as few times as possible. Use <code>env.GIT_COMMIT</code> in place of repeated invocations.</p>
