@@ -11,3 +11,6 @@ then start off with:
 ```groovy
 @Library('github.com/docker/jenkins-pipeline-scripts') _
 ```
+
+See [Extending with Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) for more
+information on Jenkins pipeline extensions.
