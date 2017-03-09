@@ -9,6 +9,8 @@ def call(Closure body=null) {
       def image = "busybox"
       if (arch == "arm") {
         image = "armhf/busybox"
+      } else if (arch == "ppc64le" || arch == "s390x") {
+        image = "${arch}/busybox"
       }
       sh "docker run --rm -v \$(pwd):/workspace ${image} chown -R \"\$(id -u):\$(id -g)\" /workspace"
     } catch (Exception e) {
