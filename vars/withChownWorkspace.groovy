@@ -5,9 +5,9 @@ def call(Closure body=null) {
   } finally {
     try {
       echo "chowning workspace"
-      def arch = sh(script: "docker version -f '{{ .Server.Arch }}'", returnStdout: true).trim()
+      def arch = sh(script: "uname -m", returnStdout: true).trim()
       def image = "busybox"
-      if (arch == "arm") {
+      if (arch.startsWith("arm")) {
         image = "armhf/busybox"
       } else if (arch == "ppc64le" || arch == "s390x") {
         image = "${arch}/busybox"
