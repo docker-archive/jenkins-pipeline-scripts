@@ -9,6 +9,8 @@ def call(Closure body=null) {
       def image = "busybox"
       if (arch.startsWith("arm")) {
         image = "armhf/busybox"
+      } else if (arch == "aarch64" ) {
+        image = "arm64v8/busybox"
       } else if (arch == "ppc64le" || arch == "s390x") {
         image = "${arch}/busybox"
       }
