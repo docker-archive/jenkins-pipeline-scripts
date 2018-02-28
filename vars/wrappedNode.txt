@@ -6,6 +6,6 @@ Runs the given closure on a node matching <code>label</code> with the following 
 <li>Timestamps in build output</li>
 <li>Colored output</li>
 <li>Logged into the Docker Registry with the credentials specified by the given ID</li>
-<li>If cleanWorkspace is true, the workspace is removed (chowning the directory first).</li>
+<li>If cleanWorkspace is true, all containers are removed and the workspace is removed (chowning the directory first).</li>
 </ul>
 </p>
