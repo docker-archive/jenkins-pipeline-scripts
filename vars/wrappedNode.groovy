@@ -10,7 +10,7 @@ def call(Map vars, Closure body=null) {
             // propogated.
             withChownWorkspace { echo "cleanWorkspace: Ensuring workspace is owned by ${env.USER}" }
             echo "Removing all docker images"
-            sh("docker ps -aq | xargs docker rm -f")
+            sh("for image in \$(docker ps -aq); do docker rm -f \$image; done")
             echo "Docker images have been removed"
 
             echo "cleanWorkspace: Removing existing workspace"
