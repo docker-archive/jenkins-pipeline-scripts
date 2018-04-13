@@ -9,9 +9,9 @@ def call(Map vars, Closure body=null) {
             // or is misconfigured, these operations will fail and the exception will be
             // propogated.
             withChownWorkspace { echo "cleanWorkspace: Ensuring workspace is owned by ${env.USER}" }
-            echo "Removing all docker images"
-            sh("for image in \$(docker ps -aq); do docker rm -f \$image; done")
-            echo "Docker images have been removed"
+            echo "Removing all docker containers"
+            sh("for cid in \$(docker ls -aq); do docker container rm -vf \$cid; done")
+            echo "Docker containers have been removed"
 
             echo "cleanWorkspace: Removing existing workspace"
             deleteDir()
