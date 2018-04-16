@@ -10,7 +10,11 @@ def call(Map vars, Closure body=null) {
             // propogated.
             withChownWorkspace { echo "cleanWorkspace: Ensuring workspace is owned by ${env.USER}" }
             echo "Removing all docker containers"
-            sh("for cid in \$(docker ls -aq); do docker container rm -vf \$cid; done")
+            try {
+              sh("for cid in \$(docker ls -aq); do docker container rm -vf \$cid; done")
+            } catch (Exception e) {
+              println(e)
+            }
             echo "Docker containers have been removed"
 
             echo "cleanWorkspace: Removing existing workspace"
