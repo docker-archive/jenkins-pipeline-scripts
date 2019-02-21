@@ -12,6 +12,7 @@ def call(vpnHost, Closure body=null) {
       credentialsId: "jenkins.${vpnHost}",
       $class: "UsernamePasswordMultiBinding"
     ]]) {
+      sh 'echo "Test"'
       sh """
         docker run \\
           -d \\
